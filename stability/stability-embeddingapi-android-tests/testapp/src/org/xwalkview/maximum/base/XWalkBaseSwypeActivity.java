@@ -2,15 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-package org.xwalkview.stability.base;
+package org.xwalkview.maximum.base;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.xwalk.core.XWalkActivity;
-import org.xwalkview.stability.app.R;
+import org.xwalkview.maximum.app.R;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -20,7 +23,10 @@ import android.widget.TextView;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-public abstract class XWalkBaseVideoActivity extends XWalkActivity {
+
+public class XWalkBaseSwypeActivity extends Activity {
+    protected boolean firstFocus = false;
+
 	protected List<CheckBox> checkBoxList = new ArrayList<CheckBox>();
 	protected List<String> idList = new ArrayList<String>();
 
@@ -40,7 +46,51 @@ public abstract class XWalkBaseVideoActivity extends XWalkActivity {
     protected EditText views_num_text;
 
     //CheckBox for URL
-    protected CheckBox cb_localvideo;
+    protected CheckBox cb_yahoo;
+    protected CheckBox cb_sina;
+    protected CheckBox cb_qq;
+    protected CheckBox cb_sohu;
+    protected CheckBox cb_bing;
+    protected CheckBox cb_w3;
+    protected CheckBox cb_163;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+    	super.onCreate(savedInstanceState);
+        setContentView(R.layout.view_swype);
+
+        root = (LinearLayout) findViewById(R.id.view_swype);
+        view_root = (FrameLayout) findViewById(R.id.view_root);
+        textDes = (TextView)findViewById(R.id.xwalk_des);
+        textDes.setText("This sample demonstrates the maximum of SurfaceViews could be opend.");
+        
+        textResultTextView = (TextView)findViewById(R.id.result_show);
+
+        views_num_text = (EditText) findViewById(R.id.views_num);
+
+        cb_qq = (CheckBox) findViewById(R.id.cb_qq);
+        checkBoxList.add(cb_qq);
+
+        for(CheckBox checkBox : checkBoxList) {
+        	checkBox.setOnCheckedChangeListener(listener);
+        }
+
+        mAddViewsButton = (Button) findViewById(R.id.run_add);
+        mExitViewsButton = (Button) findViewById(R.id.run_exit);
+    }
+
+    protected void showDetailInfo(final Context context) {
+        mDetailInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new  AlertDialog.Builder(context)
+                .setTitle("Info" )
+                .setMessage(message.toString())
+                .setPositiveButton("confirm" ,  null )
+                .show();
+            }
+        });
+    }
 
     CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {  
 
@@ -63,29 +113,4 @@ public abstract class XWalkBaseVideoActivity extends XWalkActivity {
 
         }  
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_video);
-
-        root = (LinearLayout) findViewById(R.id.view_video);
-        view_root = (FrameLayout) findViewById(R.id.view_root);
-        textDes = (TextView)findViewById(R.id.xwalk_des);
-        textResultTextView = (TextView)findViewById(R.id.result_show);
-
-        views_num_text = (EditText) findViewById(R.id.views_num);
-
-        cb_localvideo = (CheckBox) findViewById(R.id.cb_localvideo);
-        checkBoxList.add(cb_localvideo);
-
-
-        for(CheckBox checkBox : checkBoxList) {
-            checkBox.setOnCheckedChangeListener(listener);
-        }
-
-        mAddViewsButton = (Button) findViewById(R.id.run_add);
-        mExitViewsButton = (Button) findViewById(R.id.run_exit);
-    }
-
 }

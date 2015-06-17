@@ -4,25 +4,24 @@
 
 package org.xwalkview.stability.app;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.xwalkview.stability.base.XWalkBaseVideoActivity;
+import org.xwalkview.stability.base.XWalkBaseNavigationActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-public class VideoWebViewsActivity extends XWalkBaseVideoActivity {
-    private List<String> idList = new ArrayList<String>();
+public class NavigationWebViewsActivity extends XWalkBaseNavigationActivity {
+    private WebView webView;
 
     @Override
     protected void onXWalkReady() {
-        textDes.setText("This sample demonstrates the feasibility to create and destroy many WebViews at same time to load webpages with playing video.");
+        setContentView(R.layout.view_maximum);
+        textDes.setText("This sample demonstrates long time navigation with different web pages in WebView.");
         mAddViewsButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 int max_num = view_num;
@@ -34,13 +33,15 @@ public class VideoWebViewsActivity extends XWalkBaseVideoActivity {
                         if (url_index >= len) {
                             url_index = 0;
                         }
-                        WebView webView = new WebView(VideoWebViewsActivity.this);
+                        webView = new WebView(NavigationWebViewsActivity.this);
+                        webView.setId(i);
                         webView.setWebViewClient(new TestWebViewClientBase());
                         webView.getSettings().setJavaScriptEnabled(true);
                         webView.loadUrl(checkBoxList.get(url_index).getText().toString());
                         url_index++;
 
                         mAddViewsButton.setClickable(false);
+
                         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(view_root.getWidth() - i * 10, view_root.getHeight() - i * 10);
                         params.gravity = Gravity.CENTER;
                         view_root.addView(webView, params);
@@ -49,14 +50,48 @@ public class VideoWebViewsActivity extends XWalkBaseVideoActivity {
                 }
             }
         });
-
         mExitViewsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.exit(0);
             }
         });
+        mPrevButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Go backward
+                if (webView != null &&
+                        webView.canGoBack()) {
+                    webView.goBack();
+                }
+            }
+        });
+        mNextButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Go forward
+                if (webView != null &&
+                        webView.canGoForward()) {
+                    webView.goForward();
+                }
+            }
+        });
         setContentView(root);
+        if(hasPerform == false && isWindowReady == true) {
+            mAddViewsButton.performClick();
+            hasPerform = true;
+        }
+        isXwalkReady = true;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus == true && isXwalkReady == true && hasPerform == false){
+            mAddViewsButton.performClick();
+            hasPerform = true;
+        }
+        isWindowReady = true;
     }
 
     class TestWebViewClientBase extends WebViewClient {
@@ -71,7 +106,6 @@ public class VideoWebViewsActivity extends XWalkBaseVideoActivity {
                 }
                 textResultTextView.setText(String.valueOf(count_num));
             }
-
             super.onPageFinished(view, url);
         }
     }

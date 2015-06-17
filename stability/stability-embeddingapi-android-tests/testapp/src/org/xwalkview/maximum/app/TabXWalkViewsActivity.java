@@ -4,21 +4,21 @@
 
 package org.xwalkview.stability.app;
 
+import org.xwalk.core.XWalkPreferences;
 import org.xwalk.core.XWalkUIClient;
 import org.xwalk.core.XWalkView;
-import org.xwalkview.stability.base.XWalkBaseTabVideoActivity;
+import org.xwalkview.stability.base.XWalkBaseTabActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TabHost.TabContentFactory;
 import android.widget.TabHost.TabSpec;
 
-public class XWalkViewsPlayingGameActivity extends XWalkBaseTabVideoActivity {
+public class TabXWalkViewsActivity extends XWalkBaseTabActivity {
 
     @Override
     protected void onXWalkReady() {
-        textDes.setText("This sample demonstrates long time play game in XWalkView.");
-        views_num_text.setText(VIEWS_NUM_ONE);
-        cb_localvideo.setText(GAME_URL);
+        textDes.setText("This sample demonstrates the feasibility to create and destroy XWalkViews in many tabs (1 xwalkview per tab) at same time.");
+        XWalkPreferences.setValue(XWalkPreferences.ANIMATABLE_XWALK_VIEW, false);
         mAddViewsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +40,7 @@ public class XWalkViewsPlayingGameActivity extends XWalkBaseTabVideoActivity {
 
                             @Override
                             public View createTabContent(String tag) {
-                                XWalkView mXWalkView = new XWalkView(XWalkViewsPlayingGameActivity.this, XWalkViewsPlayingGameActivity.this);
+                                XWalkView mXWalkView = new XWalkView(TabXWalkViewsActivity.this, TabXWalkViewsActivity.this);
                                 mXWalkView.setId(i_index);
                                 i_index++;
                                 mXWalkView.setUIClient(new TestXWalkUIClientBase(mXWalkView));
@@ -65,7 +65,6 @@ public class XWalkViewsPlayingGameActivity extends XWalkBaseTabVideoActivity {
                 System.exit(0);
             }
         });
-        mAddViewsButton.performClick();
         setContentView(root);
     }
 

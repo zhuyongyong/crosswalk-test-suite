@@ -4,21 +4,22 @@
 
 package org.xwalkview.stability.app;
 
+
+import org.xwalk.core.XWalkPreferences;
 import org.xwalk.core.XWalkUIClient;
 import org.xwalk.core.XWalkView;
-import org.xwalkview.stability.base.XWalkBaseTabVideoActivity;
+import org.xwalkview.stability.base.XWalkBaseActivity;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.TabHost.TabContentFactory;
-import android.widget.TabHost.TabSpec;
+import android.widget.FrameLayout;
 
-public class XWalkViewsPlayingGameActivity extends XWalkBaseTabVideoActivity {
+public class AddXWalkViewsActivity extends XWalkBaseActivity {
 
     @Override
     protected void onXWalkReady() {
-        textDes.setText("This sample demonstrates long time play game in XWalkView.");
-        views_num_text.setText(VIEWS_NUM_ONE);
-        cb_localvideo.setText(GAME_URL);
+        textDes.setText("This sample demonstrates the maximum of XWalkViews could be opend.");
+        XWalkPreferences.setValue(XWalkPreferences.ANIMATABLE_XWALK_VIEW, true);
         mAddViewsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,27 +33,18 @@ public class XWalkViewsPlayingGameActivity extends XWalkBaseTabVideoActivity {
                         if (url_index >= len) {
                             url_index = 0;
                         }
-                        String name = "Tab " + (i + 1);
-                        TabSpec tab1 = tabHost.newTabSpec(name);
-                        tab1.setIndicator(name);
-
-                        tab1.setContent(new TabContentFactory(){
-
-                            @Override
-                            public View createTabContent(String tag) {
-                                XWalkView mXWalkView = new XWalkView(XWalkViewsPlayingGameActivity.this, XWalkViewsPlayingGameActivity.this);
-                                mXWalkView.setId(i_index);
-                                i_index++;
-                                mXWalkView.setUIClient(new TestXWalkUIClientBase(mXWalkView));
-                                mXWalkView.load(checkBoxList.get(url_index).getText().toString(), null);
-                                return mXWalkView;
-                            }
-                        });
-                        tabHost.addTab(tab1);
-                        tabHost.setCurrentTab(i);
-                        tabHost.performClick();
+                        XWalkView mXWalkView = new XWalkView(AddXWalkViewsActivity.this, AddXWalkViewsActivity.this);
+                        mXWalkView.setId(i);
+                        mXWalkView.setUIClient(new TestXWalkUIClientBase(mXWalkView));
+                        mXWalkView.load(checkBoxList.get(url_index).getText().toString(), null);
                         url_index++;
                         mAddViewsButton.setClickable(false);
+
+                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(view_root.getWidth() - i * 10, view_root.getHeight() - i * 10);
+                        params.gravity = Gravity.CENTER;
+                        mXWalkView.setLayoutParams(params);
+                        view_root.addView(mXWalkView);
+
                     }
                     view_num = view_num + add_num;
                 }
@@ -65,7 +57,6 @@ public class XWalkViewsPlayingGameActivity extends XWalkBaseTabVideoActivity {
                 System.exit(0);
             }
         });
-        mAddViewsButton.performClick();
         setContentView(root);
     }
 

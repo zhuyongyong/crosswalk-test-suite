@@ -11,25 +11,25 @@ import org.xwalk.core.XWalkActivity;
 import org.xwalkview.stability.app.R;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-public abstract class XWalkBaseTabVideoActivity extends XWalkActivity implements
-TabHost.TabContentFactory {
-    protected List<CheckBox> checkBoxList = new ArrayList<CheckBox>();
-    protected List<String> idList = new ArrayList<String>();
-    protected int i_index = 0;
 
-	protected static final String VIEWS_NUM_ONE = "1";
-	protected static final String GAME_URL = "http://rscohn2.herokuapp.com/sbp/";
+public abstract class XWalkBaseNavigationActivity extends XWalkActivity {
+    protected boolean isXwalkReady = false;
+    protected boolean isWindowReady = false;
+    protected boolean hasPerform = false;
+
+	protected List<CheckBox> checkBoxList = new ArrayList<CheckBox>();
+	protected List<String> idList = new ArrayList<String>();
+
     protected Button mDetailInfoButton;
     protected StringBuffer message;
     protected TextView textDes;
@@ -46,53 +46,52 @@ TabHost.TabContentFactory {
     protected EditText views_num_text;
 
     //CheckBox for URL
-    protected CheckBox cb_localvideo;
+    protected CheckBox cb_yahoo;
+    protected CheckBox cb_sina;
+    protected CheckBox cb_qq;
+    protected CheckBox cb_sohu;
+    protected CheckBox cb_bing;
+    protected CheckBox cb_w3;
+    protected CheckBox cb_163;
+    protected ImageButton mPrevButton;
+    protected ImageButton mNextButton;
 
-    protected TabHost tabHost;
+    CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {  
 
-    @Override
-    public View createTabContent(String tag)
-    {
-        final TextView tv = new TextView(this);
-        tv.setText("Content for tab with tag " + tag);
-        return tv;
-    }
-
-    CompoundButton.OnCheckedChangeListener listener = new CompoundButton.OnCheckedChangeListener() {
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        @Override  
+        public void onCheckedChanged(CompoundButton buttonView,  
+                boolean isChecked) {
             CheckBox box = (CheckBox) buttonView;  
             if(box.isChecked()) {
-                checkBoxList.add(box);
+            	checkBoxList.add(box);
             } else {
-                if(checkBoxList.size() <= 1) {
-                    Toast.makeText(getApplicationContext(),  
-                            "At least one url checkbox should be Selected",
+            	if(checkBoxList.size() <= 1) {
+            		Toast.makeText(getApplicationContext(),  
+                            "At least one url checkbox should be Selected", 
                             Toast.LENGTH_LONG).show();
-                    box.setChecked(true);
-                    return;
-                }
-                checkBoxList.remove(box);
+            		box.setChecked(true);
+            		return;
+            	}
+            	checkBoxList.remove(box);
             }
 
-        }
+        }  
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_tab_scroll_video);
+        setContentView(R.layout.view_navigation);
 
-        root = (LinearLayout) findViewById(R.id.view_tab_scroll_video);
+        root = (LinearLayout) findViewById(R.id.view_navigation);
         view_root = (FrameLayout) findViewById(R.id.view_root);
         textDes = (TextView)findViewById(R.id.xwalk_des);
         textResultTextView = (TextView)findViewById(R.id.result_show);
 
         views_num_text = (EditText) findViewById(R.id.views_num);
 
-        cb_localvideo = (CheckBox) findViewById(R.id.cb_localvideo);
-        checkBoxList.add(cb_localvideo);
+        cb_qq = (CheckBox) findViewById(R.id.cb_qq);
+        checkBoxList.add(cb_qq);
 
         for(CheckBox checkBox : checkBoxList) {
             checkBox.setOnCheckedChangeListener(listener);
@@ -100,8 +99,8 @@ TabHost.TabContentFactory {
 
         mAddViewsButton = (Button) findViewById(R.id.run_add);
         mExitViewsButton = (Button) findViewById(R.id.run_exit);
-
-        tabHost = (TabHost) findViewById(R.id.myTabHost);
-        tabHost.setup();
+        mPrevButton = (ImageButton) findViewById(R.id.prev);
+        mNextButton = (ImageButton) findViewById(R.id.next);
     }
+
 }

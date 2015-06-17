@@ -61,7 +61,7 @@ class TestStabilityIterativeFunctions(unittest.TestCase):
         repeat_times = 50
         sleep_time = 60
         pre_time = time.time()
-        testName = "Launch_Create5_Exit_Repeat50"
+        testName = "Launch_Create5_Exit_Repeat"
         sysmon_path = ConstPath + '/sysmon.sh'
         sysmon_cmd = sysmon_path + ' ' + testName + ' ' + \
             str(sysmon_runtimes) + ' org.xwalkview.maximum.app'

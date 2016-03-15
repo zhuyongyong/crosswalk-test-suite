@@ -134,6 +134,10 @@ usecase-webapi-xwalk-tests
 webapi-appsecurity-external-tests
 "
 
+CORDOVALITELIST="
+cordova-lite-android-tests
+"
+
 EMBEDDINGLIST="embedding-api-android-tests
 embedding-asyncapi-android-tests
 usecase-embedding-android-tests
